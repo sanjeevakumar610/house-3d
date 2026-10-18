@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>House 3D Walkthrough</title>
+  <meta name="description" content="3D walkthrough of a two-storey house plan">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="viewport"></div>
+
+  <header class="bar">
+    <div class="brand">House 3D</div>
+    <nav class="views" role="tablist" aria-label="View">
+      <button data-view="house" class="active" role="tab">Whole house</button>
+      <button data-view="gf" role="tab">Ground floor</button>
+      <button data-view="uf" role="tab">Upper floor</button>
+    </nav>
+    <div class="toggles">
+      <label><input type="checkbox" id="tgl-roof" checked> Roof</label>
+      <label><input type="checkbox" id="tgl-labels" checked> Labels</label>
+    </div>
+    <button id="btn-walk" class="primary">Walk inside</button>
+    <div class="walk-ui">
+      <label class="goto">Go to
+        <select id="goto"></select>
+      </label>
+      <button id="btn-exit">Exit walk</button>
+    </div>
+  </header>
+
+  <aside id="room-panel" class="room-panel" hidden aria-live="polite">
+    <button class="close" aria-label="Close">×</button>
+    <h3></h3>
+    <div class="sub"></div>
+    <div class="body"></div>
+  </aside>
+
+  <nav id="dock" class="dock" aria-label="Design tools">
+    <button data-tool="paint" title="Paint walls">
+      <svg viewBox="0 0 24 24"><path d="M4 4h13v5H4z M17 6h3v6h-8v3" /><path d="M11 15h2v6h-2z" /></svg><span>Paint</span>
+    </button>
+    <button data-tool="floor" title="Floor finishes">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5-9 5z M3 9v6l9 5 9-5V9 M12 14v6" /></svg><span>Floors</span>
+    </button>
+    <button data-tool="furniture" title="Furniture">
+      <svg viewBox="0 0 24 24"><path d="M5 11V8a3 3 0 013-3h8a3 3 0 013 3v3 M3 11h18v6H3z M5 17v2 M19 17v2" /></svg><span>Furniture</span>
+    </button>
+    <button data-tool="save" title="Save & load">
+      <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z M8 3v5h7V3 M8 21v-7h8v7" /></svg><span>Save</span>
+    </button>
+  </nav>
+
+  <aside id="design-panel" class="design-panel" hidden>
+    <button class="close" aria-label="Close">×</button>
+    <h3></h3>
+    <div class="body"></div>
+  </aside>
+
+  <div id="selection-bar" class="selection-bar" hidden>
+    <div class="info"><b class="name"></b><span class="size"></span></div>
+    <label class="len" hidden>Length <input type="range" min="2" max="12" step="0.25"> <span></span></label>
+    <div class="actions">
+      <button data-a="rl" title="Rotate left 15°">⟲ 15°</button>
+      <button data-a="rr" title="Rotate right 15°">⟳ 15°</button>
+      <button data-a="r90" title="Rotate 90°">90°</button>
+      <button data-a="dup" title="Duplicate">Copy</button>
+      <button data-a="del" class="danger" title="Delete">Delete</button>
+      <button data-a="close" title="Deselect" aria-label="Deselect">×</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <div id="joystick" class="joystick" aria-hidden="true"><div class="knob"></div></div>
+  <div class="hint" id="hint"></div>
+  <div class="loading" id="loading">Loading model…</div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

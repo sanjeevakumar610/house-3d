@@ -1,0 +1,2325 @@
+{
+ "source": "Construction drawing set, sheet 01 (15 Aug 2026). Traced at 9 pt = 1 ft.",
+ "units": "feet",
+ "slab": 0.4166666666666667,
+ "levels": {
+  "ground": 0,
+  "gf": 1,
+  "gfBath": 0.9166666666666666,
+  "carPorch": 0.5,
+  "verandah": 0.75,
+  "uf": 11,
+  "ufBath": 10.916666666666666,
+  "tankFloor": 22.083333333333332,
+  "tankTop": 27,
+  "ufEaves": 19.75,
+  "ridge": 22.25
+ },
+ "schedule": {
+  "D01": {
+   "w": 3.5,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash decorative door"
+  },
+  "D02": {
+   "w": 3,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash decorative door"
+  },
+  "D03": {
+   "w": 3,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash fit panel door"
+  },
+  "D04": {
+   "w": 2.5,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash marine door"
+  },
+  "D05": {
+   "w": 2.5,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash sliding door"
+  },
+  "D06": {
+   "w": 2.5,
+   "h": 7,
+   "kind": "door",
+   "desc": "Single sash timber door"
+  },
+  "W01": {
+   "w": 4,
+   "h": 7,
+   "kind": "window",
+   "desc": "2-sash AL louvre window"
+  },
+  "W02": {
+   "w": 2.5,
+   "h": 7,
+   "kind": "window",
+   "desc": "4-sash AL top hung window"
+  },
+  "W03": {
+   "w": 3,
+   "h": 3.75,
+   "kind": "window",
+   "desc": "2-sash AL casement window"
+  },
+  "W04": {
+   "w": 4.083333333333333,
+   "h": 1.6666666666666667,
+   "kind": "window",
+   "desc": "2-sash AL casement window"
+  },
+  "SD01": {
+   "w": 5,
+   "h": 7,
+   "kind": "sliding",
+   "desc": "2-sash AL sliding"
+  },
+  "SD02": {
+   "w": 5,
+   "h": 7,
+   "kind": "sliding",
+   "desc": "2-sash AL sliding"
+  },
+  "SD03": {
+   "w": 7.5,
+   "h": 7,
+   "kind": "sliding",
+   "desc": "3-sash AL sliding"
+  },
+  "SD04": {
+   "w": 4.333333333333333,
+   "h": 7,
+   "kind": "sliding",
+   "desc": "2-sash AL sliding"
+  },
+  "SD05": {
+   "w": 8,
+   "h": 7,
+   "kind": "sliding",
+   "desc": "3-sash AL sliding"
+  },
+  "F01": {
+   "w": 3,
+   "h": 2,
+   "kind": "window",
+   "desc": "1-sash top hung window"
+  },
+  "A01": {
+   "w": 2.5,
+   "h": 7,
+   "kind": "arch",
+   "desc": "Masonry arch"
+  },
+  "A02": {
+   "w": 3,
+   "h": 7,
+   "kind": "arch",
+   "desc": "Masonry arch"
+  }
+ },
+ "wallHeights": {
+  "gf": 9.583333333333334,
+  "uf": 8.75
+ },
+ "floors": {
+  "gf": {
+   "name": "Ground Floor",
+   "walls": [
+    {
+     "id": "gf-west-top",
+     "a": [
+      1.044,
+      0.25
+     ],
+     "b": [
+      0.25,
+      4.489
+     ],
+     "length": 4.313,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-west",
+     "a": [
+      0.25,
+      4.489
+     ],
+     "b": [
+      0.25,
+      32.633
+     ],
+     "length": 28.144,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-north",
+     "a": [
+      1.044,
+      0.25
+     ],
+     "b": [
+      14.05,
+      0.25
+     ],
+     "length": 13.006,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "F01",
+       "kind": "window",
+       "from": 0.333,
+       "to": 3.333,
+       "width": 3,
+       "sill": 5,
+       "height": 2
+      }
+     ]
+    },
+    {
+     "id": "gf-bed1-east",
+     "a": [
+      14.05,
+      0.25
+     ],
+     "b": [
+      14.05,
+      10
+     ],
+     "length": 9.75,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "SD01",
+       "kind": "sliding",
+       "from": 0.472,
+       "to": 5.472,
+       "width": 5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "gf-bath-bed1",
+     "a": [
+      4.656,
+      0.5
+     ],
+     "b": [
+      4.656,
+      9.5
+     ],
+     "length": 9,
+     "thickness": 0.333,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-bath-bed1-south",
+     "a": [
+      0.5,
+      9.75
+     ],
+     "b": [
+      14.3,
+      9.75
+     ],
+     "length": 13.8,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D04",
+       "kind": "door",
+       "from": 1.478,
+       "to": 3.989,
+       "width": 2.511,
+       "sill": 0,
+       "height": 7
+      },
+      {
+       "tag": "D02",
+       "kind": "door",
+       "from": 4.822,
+       "to": 7.822,
+       "width": 3,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "gf-pantry-north",
+     "a": [
+      14.05,
+      5.939
+     ],
+     "b": [
+      17.55,
+      5.939
+     ],
+     "length": 3.5,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D03",
+       "kind": "door",
+       "from": 0.25,
+       "to": 3.25,
+       "width": 3,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "gf-kitchen-west",
+     "a": [
+      17.55,
+      4.189
+     ],
+     "b": [
+      17.55,
+      6.689
+     ],
+     "length": 2.5,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-kitchen-north",
+     "a": [
+      17.3,
+      4.439
+     ],
+     "b": [
+      22.478,
+      4.439
+     ],
+     "length": 5.178,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "W03",
+       "kind": "window",
+       "from": 1.111,
+       "to": 4.111,
+       "width": 3,
+       "sill": 3.25,
+       "height": 3.75
+      }
+     ]
+    },
+    {
+     "id": "gf-east-upper",
+     "a": [
+      22.478,
+      4.439
+     ],
+     "b": [
+      20.856,
+      14.106
+     ],
+     "length": 9.802,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-pantry-jog",
+     "a": [
+      18.233,
+      14.106
+     ],
+     "b": [
+      20.856,
+      14.106
+     ],
+     "length": 2.623,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-east-lower",
+     "a": [
+      20.161,
+      14.106
+     ],
+     "b": [
+      17.683,
+      32.633
+     ],
+     "length": 18.692,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-timber-screen",
+     "a": [
+      13.467,
+      14.106
+     ],
+     "b": [
+      18.233,
+      14.106
+     ],
+     "length": 4.766,
+     "thickness": 0.5,
+     "kind": "screen",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-stair-spine-low",
+     "a": [
+      0.5,
+      19.883
+     ],
+     "b": [
+      3,
+      19.883
+     ],
+     "length": 2.5,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": 4,
+     "openings": []
+    },
+    {
+     "id": "gf-stair-north",
+     "a": [
+      3,
+      19.883
+     ],
+     "b": [
+      10.5,
+      19.883
+     ],
+     "length": 7.5,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "W04",
+       "kind": "window",
+       "from": 0.211,
+       "to": 4.289,
+       "width": 4.078,
+       "sill": 5.333,
+       "height": 1.667,
+       "note": "tagged W03 on plan; drawn width matches W04"
+      },
+      {
+       "tag": "W02",
+       "kind": "window",
+       "from": 4.544,
+       "to": 6.789,
+       "width": 2.244,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "gf-stair-east",
+     "a": [
+      10.25,
+      19.883
+     ],
+     "b": [
+      10.25,
+      23.378
+     ],
+     "length": 3.495,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "W02",
+       "kind": "window",
+       "from": 0.256,
+       "to": 2.756,
+       "width": 2.5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "gf-porch-entrance",
+     "a": [
+      10.25,
+      23.378
+     ],
+     "b": [
+      10.25,
+      28.133
+     ],
+     "length": 4.755,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "gf-verandah-planter",
+     "a": [
+      10.25,
+      28.133
+     ],
+     "b": [
+      10.25,
+      32.633
+     ],
+     "length": 4.5,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "gf-entrance-front",
+     "a": [
+      10.25,
+      27.883
+     ],
+     "b": [
+      18.322,
+      27.883
+     ],
+     "length": 8.072,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D01",
+       "kind": "door",
+       "from": 0.25,
+       "to": 3.75,
+       "width": 3.5,
+       "sill": 0,
+       "height": 7
+      },
+      {
+       "tag": "W01",
+       "kind": "window",
+       "from": 3.75,
+       "to": 7.75,
+       "width": 4,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    }
+   ],
+   "rooms": [
+    {
+     "id": "gf-bath",
+     "name": "Bath",
+     "level": 0.9166666666666666,
+     "poly": [
+      [
+       1.289,
+       0.5
+      ],
+      [
+       4.489,
+       0.5
+      ],
+      [
+       4.489,
+       9.5
+      ],
+      [
+       0.5,
+       9.5
+      ],
+      [
+       0.5,
+       4.489
+      ]
+     ],
+     "wet": true,
+     "area": 34.327,
+     "bbox": [
+      0.5,
+      0.5,
+      4.489,
+      9.5
+     ]
+    },
+    {
+     "id": "gf-bed1",
+     "name": "Bed 01",
+     "level": 1,
+     "poly": [
+      [
+       4.822,
+       0.5
+      ],
+      [
+       13.8,
+       0.5
+      ],
+      [
+       13.8,
+       9.5
+      ],
+      [
+       4.822,
+       9.5
+      ]
+     ],
+     "area": 80.802,
+     "bbox": [
+      4.822,
+      0.5,
+      13.8,
+      9.5
+     ]
+    },
+    {
+     "id": "gf-pantry",
+     "name": "Pantry",
+     "level": 1,
+     "poly": [
+      [
+       14.3,
+       6.189
+      ],
+      [
+       17.3,
+       6.189
+      ],
+      [
+       17.3,
+       6.689
+      ],
+      [
+       17.8,
+       6.689
+      ],
+      [
+       17.8,
+       4.689
+      ],
+      [
+       22.2,
+       4.689
+      ],
+      [
+       20.656,
+       13.856
+      ],
+      [
+       13.467,
+       13.856
+      ],
+      [
+       13.467,
+       10
+      ],
+      [
+       14.3,
+       10
+      ]
+     ],
+     "kitchen": true,
+     "area": 63.054,
+     "bbox": [
+      13.467,
+      4.689,
+      22.2,
+      13.856
+     ]
+    },
+    {
+     "id": "gf-living",
+     "name": "Living",
+     "level": 1,
+     "poly": [
+      [
+       0.5,
+       10
+      ],
+      [
+       13.467,
+       10
+      ],
+      [
+       13.467,
+       14.356
+      ],
+      [
+       10.5,
+       14.356
+      ],
+      [
+       10.5,
+       19.633
+      ],
+      [
+       0.5,
+       19.633
+      ]
+     ],
+     "area": 109.254,
+     "bbox": [
+      0.5,
+      10,
+      13.467,
+      19.633
+     ]
+    },
+    {
+     "id": "gf-dining",
+     "name": "Dining",
+     "level": 1,
+     "poly": [
+      [
+       10.5,
+       14.356
+      ],
+      [
+       19.878,
+       14.356
+      ],
+      [
+       19.1,
+       20.133
+      ],
+      [
+       10.5,
+       20.133
+      ]
+     ],
+     "area": 51.929,
+     "bbox": [
+      10.5,
+      14.356,
+      19.878,
+      20.133
+     ]
+    },
+    {
+     "id": "gf-entrance",
+     "name": "Entrance",
+     "level": 1,
+     "poly": [
+      [
+       10.5,
+       20.133
+      ],
+      [
+       19.1,
+       20.133
+      ],
+      [
+       18.1,
+       27.633
+      ],
+      [
+       10.5,
+       27.633
+      ]
+     ],
+     "area": 60.75,
+     "bbox": [
+      10.5,
+      20.133,
+      19.1,
+      27.633
+     ]
+    },
+    {
+     "id": "gf-verandah",
+     "name": "Verandah",
+     "level": 0.75,
+     "poly": [
+      [
+       10.5,
+       28.133
+      ],
+      [
+       18.033,
+       28.133
+      ],
+      [
+       17.933,
+       32.633
+      ],
+      [
+       10.5,
+       32.633
+      ]
+     ],
+     "outdoor": true,
+     "area": 33.674,
+     "bbox": [
+      10.5,
+      28.133,
+      18.033,
+      32.633
+     ]
+    },
+    {
+     "id": "gf-carporch",
+     "name": "Car Porch",
+     "level": 0.5,
+     "poly": [
+      [
+       0.5,
+       23.133
+      ],
+      [
+       10,
+       23.133
+      ],
+      [
+       10,
+       40.044
+      ],
+      [
+       0.5,
+       40.044
+      ]
+     ],
+     "outdoor": true,
+     "area": 160.654,
+     "bbox": [
+      0.5,
+      23.133,
+      10,
+      40.044
+     ]
+    },
+    {
+     "id": "gf-stair",
+     "name": "Staircase",
+     "level": 0.5,
+     "poly": [
+      [
+       0.5,
+       20.133
+      ],
+      [
+       10,
+       20.133
+      ],
+      [
+       10,
+       23.133
+      ],
+      [
+       0.5,
+       23.133
+      ]
+     ],
+     "stair": true,
+     "area": 28.5,
+     "bbox": [
+      0.5,
+      20.133,
+      10,
+      23.133
+     ]
+    }
+   ],
+   "voids": [],
+   "columns": [
+    [
+     0.467,
+     0.489
+    ],
+    [
+     14.267,
+     0.489
+    ],
+    [
+     11.111,
+     9.867
+    ],
+    [
+     0.411,
+     9.867
+    ],
+    [
+     0.411,
+     17.167
+    ],
+    [
+     0.411,
+     23.411
+    ],
+    [
+     0.411,
+     31.944
+    ],
+    [
+     10.356,
+     31.944
+    ],
+    [
+     10.356,
+     23.411
+    ],
+    [
+     22.067,
+     6.333
+    ],
+    [
+     19.578,
+     17.2
+    ],
+    [
+     17.611,
+     32.256
+    ]
+   ]
+  },
+  "uf": {
+   "name": "Upper Floor",
+   "walls": [
+    {
+     "id": "uf-west-top",
+     "a": [
+      1.044,
+      0.25
+     ],
+     "b": [
+      0.25,
+      4.489
+     ],
+     "length": 4.313,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-west",
+     "a": [
+      0.25,
+      4.489
+     ],
+     "b": [
+      0.25,
+      32.633
+     ],
+     "length": 28.144,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "F01",
+       "kind": "window",
+       "from": 5.5,
+       "to": 8.5,
+       "width": 3,
+       "sill": 5,
+       "height": 2
+      }
+     ]
+    },
+    {
+     "id": "uf-north",
+     "a": [
+      1.044,
+      0.25
+     ],
+     "b": [
+      14.061,
+      0.25
+     ],
+     "length": 13.017,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "F01",
+       "kind": "window",
+       "from": 0.411,
+       "to": 3.411,
+       "width": 3,
+       "sill": 5,
+       "height": 2
+      }
+     ]
+    },
+    {
+     "id": "uf-abath-bed1",
+     "a": [
+      4.628,
+      0.5
+     ],
+     "b": [
+      4.628,
+      9.5
+     ],
+     "length": 9,
+     "thickness": 0.333,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D05",
+       "kind": "door",
+       "from": 3.167,
+       "to": 5.667,
+       "width": 2.5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed1-east-upper",
+     "a": [
+      14.061,
+      0.25
+     ],
+     "b": [
+      14.061,
+      5.939
+     ],
+     "length": 5.689,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "SD02",
+       "kind": "sliding",
+       "from": 0.439,
+       "to": 5.439,
+       "width": 5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed1-east-lower",
+     "a": [
+      12.983,
+      5.939
+     ],
+     "b": [
+      12.983,
+      9.75
+     ],
+     "length": 3.811,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-bed2-north",
+     "a": [
+      12.983,
+      5.939
+     ],
+     "b": [
+      22.244,
+      5.939
+     ],
+     "length": 9.261,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "SD04",
+       "kind": "sliding",
+       "from": 4.539,
+       "to": 8.872,
+       "width": 4.333,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed1-south",
+     "a": [
+      0.5,
+      9.75
+     ],
+     "b": [
+      13.233,
+      9.75
+     ],
+     "length": 12.733,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D02",
+       "kind": "door",
+       "from": 4.333,
+       "to": 7.333,
+       "width": 3,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed2-west",
+     "a": [
+      10.983,
+      9.75
+     ],
+     "b": [
+      10.983,
+      17.294
+     ],
+     "length": 7.544,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D02",
+       "kind": "door",
+       "from": 1.605,
+       "to": 4.605,
+       "width": 3,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed2-bed3",
+     "a": [
+      10.983,
+      17.294
+     ],
+     "b": [
+      19.744,
+      17.294
+     ],
+     "length": 8.761,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-east-upper",
+     "a": [
+      22.278,
+      5.7
+     ],
+     "b": [
+      20.811,
+      14.161
+     ],
+     "length": 8.587,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-east-jog",
+     "a": [
+      20.167,
+      14.161
+     ],
+     "b": [
+      20.811,
+      14.161
+     ],
+     "length": 0.644,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-east-lower",
+     "a": [
+      20.167,
+      14.161
+     ],
+     "b": [
+      18.089,
+      29.378
+     ],
+     "length": 15.358,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-bath-north",
+     "a": [
+      0.5,
+      13.156
+     ],
+     "b": [
+      7.889,
+      13.156
+     ],
+     "length": 7.389,
+     "thickness": 0.378,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D04",
+       "kind": "door",
+       "from": 4.889,
+       "to": 7.389,
+       "width": 2.5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bath-east",
+     "a": [
+      8.072,
+      10
+     ],
+     "b": [
+      8.072,
+      17.544
+     ],
+     "length": 7.544,
+     "thickness": 0.367,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "A02",
+       "kind": "arch",
+       "from": 0,
+       "to": 2.966,
+       "width": 2.966,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bath-south",
+     "a": [
+      0.5,
+      17.339
+     ],
+     "b": [
+      10.733,
+      17.339
+     ],
+     "length": 10.233,
+     "thickness": 0.411,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "A01",
+       "kind": "arch",
+       "from": 7.755,
+       "to": 10.233,
+       "width": 2.478,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-void-rail",
+     "a": [
+      3.75,
+      10
+     ],
+     "b": [
+      3.75,
+      12.967
+     ],
+     "length": 2.967,
+     "thickness": 0.167,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bed3-door",
+     "a": [
+      10.983,
+      17.294
+     ],
+     "b": [
+      10.983,
+      20.794
+     ],
+     "length": 3.5,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D02",
+       "kind": "door",
+       "from": 0.25,
+       "to": 3.25,
+       "width": 3,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed3-jamb",
+     "a": [
+      10.261,
+      20.794
+     ],
+     "b": [
+      10.983,
+      20.794
+     ],
+     "length": 0.722,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-bed3-west",
+     "a": [
+      10.261,
+      20.544
+     ],
+     "b": [
+      10.261,
+      32.633
+     ],
+     "length": 12.089,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": []
+    },
+    {
+     "id": "uf-bed4-north",
+     "a": [
+      0.5,
+      22.883
+     ],
+     "b": [
+      10.261,
+      22.883
+     ],
+     "length": 9.761,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "D06",
+       "kind": "door",
+       "from": 7.011,
+       "to": 9.511,
+       "width": 2.5,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-stair-rail",
+     "a": [
+      3,
+      20.133
+     ],
+     "b": [
+      8.256,
+      20.133
+     ],
+     "length": 5.256,
+     "thickness": 0.167,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-stair-rail-east",
+     "a": [
+      8.256,
+      20.133
+     ],
+     "b": [
+      8.256,
+      22.633
+     ],
+     "length": 2.5,
+     "thickness": 0.167,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bed3-south",
+     "a": [
+      10.511,
+      29.378
+     ],
+     "b": [
+      18.089,
+      29.378
+     ],
+     "length": 7.578,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "SD03",
+       "kind": "sliding",
+       "from": 0.067,
+       "to": 7.334,
+       "width": 7.267,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bed4-south",
+     "a": [
+      0.5,
+      32.383
+     ],
+     "b": [
+      10.261,
+      32.383
+     ],
+     "length": 9.761,
+     "thickness": 0.5,
+     "kind": "wall",
+     "height": null,
+     "openings": [
+      {
+       "tag": "SD05",
+       "kind": "sliding",
+       "from": 0.756,
+       "to": 8.756,
+       "width": 8,
+       "sill": 0,
+       "height": 7
+      }
+     ]
+    },
+    {
+     "id": "uf-bal1-north",
+     "a": [
+      14.061,
+      0.25
+     ],
+     "b": [
+      17.056,
+      0.25
+     ],
+     "length": 2.995,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal1-east",
+     "a": [
+      17.056,
+      0.25
+     ],
+     "b": [
+      17.056,
+      5.689
+     ],
+     "length": 5.439,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal2-north",
+     "a": [
+      17.056,
+      3.283
+     ],
+     "b": [
+      22.7,
+      3.283
+     ],
+     "length": 5.644,
+     "thickness": 0.189,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal2-east",
+     "a": [
+      22.7,
+      3.283
+     ],
+     "b": [
+      22.278,
+      5.7
+     ],
+     "length": 2.454,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal3-east",
+     "a": [
+      18.089,
+      29.378
+     ],
+     "b": [
+      17.711,
+      32.383
+     ],
+     "length": 3.029,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal3-front",
+     "a": [
+      10.261,
+      32.383
+     ],
+     "b": [
+      17.711,
+      32.383
+     ],
+     "length": 7.45,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal4-west",
+     "a": [
+      0.25,
+      32.633
+     ],
+     "b": [
+      0.25,
+      34.878
+     ],
+     "length": 2.245,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal4-front",
+     "a": [
+      0.25,
+      34.878
+     ],
+     "b": [
+      10.261,
+      34.878
+     ],
+     "length": 10.011,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    },
+    {
+     "id": "uf-bal4-east",
+     "a": [
+      10.261,
+      32.633
+     ],
+     "b": [
+      10.261,
+      34.878
+     ],
+     "length": 2.245,
+     "thickness": 0.5,
+     "kind": "parapet",
+     "height": 3,
+     "openings": []
+    }
+   ],
+   "rooms": [
+    {
+     "id": "uf-abath",
+     "name": "Attached Bath",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       1.3,
+       0.5
+      ],
+      [
+       4.422,
+       0.5
+      ],
+      [
+       4.422,
+       9.5
+      ],
+      [
+       0.5,
+       9.5
+      ],
+      [
+       0.5,
+       4.489
+      ]
+     ],
+     "wet": true,
+     "area": 33.702,
+     "bbox": [
+      0.5,
+      0.5,
+      4.422,
+      9.5
+     ]
+    },
+    {
+     "id": "uf-bed1",
+     "name": "Bed 01",
+     "level": 11,
+     "poly": [
+      [
+       4.833,
+       0.5
+      ],
+      [
+       13.811,
+       0.5
+      ],
+      [
+       13.811,
+       5.689
+      ],
+      [
+       12.733,
+       5.689
+      ],
+      [
+       12.733,
+       9.5
+      ],
+      [
+       4.833,
+       9.5
+      ]
+     ],
+     "area": 76.694,
+     "bbox": [
+      4.833,
+      0.5,
+      13.811,
+      9.5
+     ]
+    },
+    {
+     "id": "uf-bal1",
+     "name": "Balcony (Bed 01)",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       14.311,
+       0.5
+      ],
+      [
+       16.811,
+       0.5
+      ],
+      [
+       16.811,
+       5.689
+      ],
+      [
+       14.311,
+       5.689
+      ]
+     ],
+     "outdoor": true,
+     "area": 12.972,
+     "bbox": [
+      14.311,
+      0.5,
+      16.811,
+      5.689
+     ]
+    },
+    {
+     "id": "uf-bal2",
+     "name": "Balcony (Bed 02)",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       17.3,
+       3.378
+      ],
+      [
+       22.444,
+       3.378
+      ],
+      [
+       22.033,
+       5.689
+      ],
+      [
+       17.3,
+       5.689
+      ]
+     ],
+     "outdoor": true,
+     "area": 11.413,
+     "bbox": [
+      17.3,
+      3.378,
+      22.444,
+      5.689
+     ]
+    },
+    {
+     "id": "uf-bed2",
+     "name": "Bed 02",
+     "level": 11,
+     "poly": [
+      [
+       13.233,
+       6.189
+      ],
+      [
+       21.944,
+       6.189
+      ],
+      [
+       20.656,
+       13.911
+      ],
+      [
+       19.944,
+       13.911
+      ],
+      [
+       19.533,
+       17.044
+      ],
+      [
+       11.233,
+       17.044
+      ],
+      [
+       11.233,
+       10
+      ],
+      [
+       13.233,
+       10
+      ]
+     ],
+     "area": 96.763,
+     "bbox": [
+      11.233,
+      6.189,
+      21.944,
+      17.044
+     ]
+    },
+    {
+     "id": "uf-hall",
+     "name": "Upper Hall",
+     "level": 11,
+     "poly": [
+      [
+       3.922,
+       10
+      ],
+      [
+       10.733,
+       10
+      ],
+      [
+       10.733,
+       17.044
+      ],
+      [
+       8.256,
+       17.044
+      ],
+      [
+       8.256,
+       12.967
+      ],
+      [
+       3.922,
+       12.967
+      ]
+     ],
+     "area": 30.307,
+     "bbox": [
+      3.922,
+      10,
+      10.733,
+      17.044
+     ]
+    },
+    {
+     "id": "uf-bath",
+     "name": "Bath",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       0.5,
+       13.344
+      ],
+      [
+       7.889,
+       13.344
+      ],
+      [
+       7.889,
+       17.133
+      ],
+      [
+       0.5,
+       17.133
+      ]
+     ],
+     "wet": true,
+     "area": 27.997,
+     "bbox": [
+      0.5,
+      13.344,
+      7.889,
+      17.133
+     ]
+    },
+    {
+     "id": "uf-landing",
+     "name": "Stair Landing",
+     "level": 11,
+     "poly": [
+      [
+       8.256,
+       17.544
+      ],
+      [
+       10.733,
+       17.544
+      ],
+      [
+       10.733,
+       20.544
+      ],
+      [
+       10.011,
+       20.544
+      ],
+      [
+       10.011,
+       22.633
+      ],
+      [
+       8.256,
+       22.633
+      ]
+     ],
+     "area": 11.097,
+     "bbox": [
+      8.256,
+      17.544,
+      10.733,
+      22.633
+     ]
+    },
+    {
+     "id": "uf-bed3",
+     "name": "Bed 03",
+     "level": 11,
+     "poly": [
+      [
+       11.233,
+       17.544
+      ],
+      [
+       19.467,
+       17.544
+      ],
+      [
+       17.911,
+       29.133
+      ],
+      [
+       10.511,
+       29.133
+      ],
+      [
+       10.511,
+       20.544
+      ],
+      [
+       11.233,
+       20.544
+      ]
+     ],
+     "area": 92.609,
+     "bbox": [
+      10.511,
+      17.544,
+      19.467,
+      29.133
+     ]
+    },
+    {
+     "id": "uf-bal3",
+     "name": "Balcony (Bed 03)",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       10.511,
+       29.622
+      ],
+      [
+       17.856,
+       29.622
+      ],
+      [
+       17.456,
+       32.133
+      ],
+      [
+       10.511,
+       32.133
+      ]
+     ],
+     "outdoor": true,
+     "area": 17.941,
+     "bbox": [
+      10.511,
+      29.622,
+      17.856,
+      32.133
+     ]
+    },
+    {
+     "id": "uf-bed4",
+     "name": "Bed 04",
+     "level": 11,
+     "poly": [
+      [
+       0.5,
+       23.133
+      ],
+      [
+       10.011,
+       23.133
+      ],
+      [
+       10.011,
+       32.133
+      ],
+      [
+       0.5,
+       32.133
+      ]
+     ],
+     "area": 85.599,
+     "bbox": [
+      0.5,
+      23.133,
+      10.011,
+      32.133
+     ]
+    },
+    {
+     "id": "uf-bal4",
+     "name": "Balcony (Bed 04)",
+     "level": 10.916666666666666,
+     "poly": [
+      [
+       0.5,
+       32.633
+      ],
+      [
+       10.011,
+       32.633
+      ],
+      [
+       10.011,
+       34.622
+      ],
+      [
+       0.5,
+       34.622
+      ]
+     ],
+     "outdoor": true,
+     "area": 18.917,
+     "bbox": [
+      0.5,
+      32.633,
+      10.011,
+      34.622
+     ]
+    }
+   ],
+   "voids": [
+    {
+     "id": "lightwell",
+     "name": "Light well (open to GF living)",
+     "poly": [
+      [
+       0.5,
+       10
+      ],
+      [
+       3.667,
+       10
+      ],
+      [
+       3.667,
+       12.967
+      ],
+      [
+       0.5,
+       12.967
+      ]
+     ]
+    },
+    {
+     "id": "stairwell",
+     "name": "Stair well",
+     "poly": [
+      [
+       0.5,
+       17.544
+      ],
+      [
+       8.256,
+       17.544
+      ],
+      [
+       8.256,
+       22.633
+      ],
+      [
+       0.5,
+       22.633
+      ]
+     ]
+    }
+   ],
+   "columns": [
+    [
+     1.022,
+     0.356
+    ],
+    [
+     13.911,
+     0.356
+    ],
+    [
+     22.033,
+     6.067
+    ],
+    [
+     11.089,
+     9.867
+    ],
+    [
+     0.367,
+     9.867
+    ],
+    [
+     0.367,
+     17.2
+    ],
+    [
+     19.544,
+     17.2
+    ],
+    [
+     0.367,
+     22.967
+    ],
+    [
+     10.322,
+     22.967
+    ],
+    [
+     0.367,
+     32.267
+    ],
+    [
+     10.322,
+     32.267
+    ],
+    [
+     17.5,
+     32.267
+    ]
+   ]
+  }
+ },
+ "stair": {
+  "base": 0.5,
+  "riser": 0.5833333333333334,
+  "risers": 18,
+  "width": 3,
+  "lower": {
+   "y": 20.133,
+   "y2": 23.133,
+   "x": [
+    8.244,
+    7.5,
+    6.744,
+    6,
+    5.244,
+    4.5,
+    3.744,
+    3
+   ]
+  },
+  "upper": {
+   "y": 17.044,
+   "y2": 20.133,
+   "x": [
+    3,
+    3.744,
+    4.5,
+    5.244,
+    6,
+    6.744,
+    7.5,
+    8.244
+   ]
+  },
+  "winder": {
+   "x": 0.5,
+   "x2": 3,
+   "y": 17.044,
+   "y2": 23.133
+  }
+ },
+ "site": {
+  "plot": [
+   [
+    -0.322,
+    -4.689
+   ],
+   [
+    27.278,
+    1.444
+   ],
+   [
+    18.622,
+    40.133
+   ],
+   [
+    -0.322,
+    40.133
+   ]
+  ],
+  "road": [
+   [
+    -5.822,
+    40.133
+   ],
+   [
+    29.733,
+    40.133
+   ],
+   [
+    29.733,
+    48
+   ],
+   [
+    -5.822,
+    48
+   ]
+  ],
+  "buildingLine": [
+   [
+    -5.822,
+    32.633
+   ],
+   [
+    29.733,
+    32.633
+   ]
+  ],
+  "boundaryHeight": 5
+ },
+ "roof": {
+  "north": [
+   [
+    1.778,
+    -2.5
+   ],
+   [
+    16.956,
+    -0.033
+   ],
+   [
+    16.956,
+    3.189
+   ],
+   [
+    22.911,
+    3.189
+   ],
+   [
+    20.467,
+    17.556
+   ],
+   [
+    8.256,
+    17.556
+   ],
+   [
+    8.256,
+    9.489
+   ],
+   [
+    0,
+    9.489
+   ],
+   [
+    0,
+    4.367
+   ]
+  ],
+  "south": [
+   [
+    0,
+    17.556
+   ],
+   [
+    20.467,
+    17.556
+   ],
+   [
+    17.9,
+    32.633
+   ],
+   [
+    12.944,
+    32.633
+   ],
+   [
+    12.944,
+    35.178
+   ],
+   [
+    0,
+    35.178
+   ]
+  ],
+  "wallLineNorth": 0,
+  "wallLineSouth": 32.633,
+  "ridgeY": 17.556,
+  "ridge": 22.25,
+  "eaves": 19.75,
+  "overhang": 2,
+  "material": "cement corrugated sheet",
+  "tankRoom": {
+   "poly": [
+    [
+     0,
+     9.489
+    ],
+    [
+     8.256,
+     9.489
+    ],
+    [
+     8.256,
+     17.556
+    ],
+    [
+     0,
+     17.556
+    ]
+   ],
+   "floor": 22.083333333333332,
+   "top": 27
+  },
+  "carPorchRoof": {
+   "poly": [
+    [
+     0,
+     35.133
+    ],
+    [
+     10.511,
+     35.133
+    ],
+    [
+     10.511,
+     40.044
+    ],
+    [
+     0,
+     40.044
+    ]
+   ],
+   "level": 10.583333333333334
+  }
+ }
+}
