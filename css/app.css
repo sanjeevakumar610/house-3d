@@ -53,6 +53,13 @@ body.walking #viewport::after {
   border-radius: 50%; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); pointer-events: none;
 }
 
+.lock-hint {
+  display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, 24px); pointer-events: none;
+  background: rgba(20, 28, 34, 0.72); color: #fff; padding: 8px 16px; border-radius: 999px; font-weight: 600;
+}
+body.walking:not(.touch):not(.mouse-locked):not(.no-lock) .lock-hint { display: block; }
+body.mouse-locked .bar { opacity: 0.55; }
+
 .joystick {
   position: fixed; left: max(22px, env(safe-area-inset-left)); bottom: max(54px, calc(env(safe-area-inset-bottom) + 44px));
   width: 120px; height: 120px; border-radius: 50%; display: none; place-items: center; touch-action: none;
@@ -168,6 +175,8 @@ body.walking.touch .joystick { display: grid; }
 .selection-bar .len { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
 .selection-bar .len[hidden] { display: none; }
 .selection-bar .actions { display: flex; gap: 4px; flex-wrap: wrap; }
+.selection-bar button.move { font-weight: 700; border-color: var(--accent); color: var(--accent); }
+.selection-bar button.move.on { background: var(--accent); color: #fff; }
 .selection-bar button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 6px 9px; font: inherit; font-size: 13px; cursor: pointer; }
 
 .toast {

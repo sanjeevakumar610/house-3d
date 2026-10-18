@@ -173,6 +173,7 @@ export class Designer {
   }
 
   select(it) {
+    if (this.moving && this.moving.it !== it) this.cancelMove();
     if (this.selected && this.selected !== it) {
       this.selected.group.children.filter((c) => c.userData.outline).forEach((c) => this.selected.group.remove(c));
     }
@@ -196,6 +197,7 @@ export class Designer {
     if (!it) return;
     it.rot = THREE.MathUtils.euclideanModulo(it.rot + THREE.MathUtils.degToRad(deg) + Math.PI, Math.PI * 2) - Math.PI;
     this.placeItem(it);
+    if (this.moving) return; // saved when it's placed
     this.syncObstacles();
     this.changed();
   }
@@ -249,8 +251,60 @@ export class Designer {
     return this.items.find((q) => q.id === h.object.userData.itemId) || null;
   }
 
+  // ------------------------------------------------------------ moving furniture
+  // Furniture never moves by accident: select it, press Move (or M), then click where it goes.
+  // While moving, the item follows the mouse, or the crosshair when the mouse is captured.
+  pointerXY(e) {
+    if (document.pointerLockElement === this.dom) {
+      const r = this.dom.getBoundingClientRect();
+      return [r.left + r.width / 2, r.top + r.height / 2];
+    }
+    return [e.clientX, e.clientY];
+  }
+
+  moveTo(x, y) {
+    const it = this.moving?.it;
+    if (!it) return;
+    const rect = this.dom.getBoundingClientRect();
+    this.ray.setFromCamera(new THREE.Vector2(((x - rect.left) / rect.width) * 2 - 1, -((y - rect.top) / rect.height) * 2 + 1), this.camera);
+    this.plane.constant = -this.levelAt(it.floor, it.x, it.y);
+    if (!this.ray.ray.intersectPlane(this.plane, this.planeHit)) return;
+    // ignore points far away (looking at the sky, or past the plot)
+    if (Math.hypot(this.planeHit.x - 11, this.planeHit.z - 20) > 45) return;
+    it.x = Math.round(this.planeHit.x / SNAP) * SNAP;
+    it.y = Math.round(this.planeHit.z / SNAP) * SNAP;
+    this.placeItem(it);
+  }
+
+  startMove() {
+    const it = this.selected;
+    if (!it) return;
+    this.moving = { it, from: { x: it.x, y: it.y } };
+    this.updateSelectionBar();
+    this.toast(this.walker.enabled ? 'Aim where it should go and click to place it. Esc cancels' : 'Click where it should go. R rotates, Esc cancels');
+  }
+
+  finishMove() {
+    if (!this.moving) return;
+    this.moving = null;
+    this.syncObstacles();
+    this.updateSelectionBar();
+    this.changed();
+    this.toast('Placed');
+  }
+
+  cancelMove() {
+    if (!this.moving) return;
+    const { it, from } = this.moving;
+    it.x = from.x; it.y = from.y;
+    this.placeItem(it);
+    this.moving = null;
+    this.updateSelectionBar();
+  }
+
   // a click (not a drag) in the 3D view; returns true when the designer used it
   handleClick(x, y) {
+    if (this.moving) { this.moveTo(x, y); this.finishMove(); return true; }
     if (this.tool === 'paint') {
       const h = this.hitAt(x, y, [this.house.root]);
       const key = h && h.object.userData.type === 'wall' ? h.object.userData.faces?.[h.face.materialIndex] : null;
@@ -268,6 +322,8 @@ export class Designer {
       } else this.toast('Click on a room floor to change it');
       return true;
     }
+    // while walking, furniture is only picked when the Furniture tool is open
+    if (this.walker.enabled && this.tool !== 'furniture') return false;
     const it = this.furnitureAt(x, y);
     if (it) { this.select(it); return true; }
     if (this.selected) { this.select(null); return this.tool === 'furniture'; }
@@ -275,52 +331,27 @@ export class Designer {
   }
 
   bindPointer() {
-    // Capture-phase listener on the container runs before OrbitControls / walk-look, so grabbing
-    // a piece of furniture drags it instead of turning the camera.
-    let drag = null;
-    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    const hit = new THREE.Vector3();
-    const toPlane = (e) => {
-      const rect = this.dom.getBoundingClientRect();
-      this.ray.setFromCamera(new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1), this.camera);
-      return this.ray.ray.intersectPlane(plane, hit);
-    };
-    this.host.addEventListener('pointerdown', (e) => {
-      if (e.target !== this.dom || this.tool === 'paint' || this.tool === 'floor') return;
-      const it = this.furnitureAt(e.clientX, e.clientY);
-      if (!it) return;
-      e.stopPropagation();
-      this.select(it);
-      plane.constant = -it.group.position.y;
-      if (!toPlane(e)) return;
-      drag = { it, id: e.pointerId, dx: it.x - hit.x, dy: it.y - hit.z, moved: false };
-      this.dom.setPointerCapture(e.pointerId);
-    }, { capture: true });
+    this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    this.planeHit = new THREE.Vector3();
+    // preview while moving: plain mouse movement (not while a button is held to turn the camera)
     this.host.addEventListener('pointermove', (e) => {
-      if (!drag || e.pointerId !== drag.id) return;
-      e.stopPropagation();
-      if (!toPlane(e)) return;
-      const free = e.altKey;
-      const snap = (v) => (free ? v : Math.round(v / SNAP) * SNAP);
-      drag.it.x = snap(hit.x + drag.dx);
-      drag.it.y = snap(hit.z + drag.dy);
-      drag.moved = true;
-      this.placeItem(drag.it);
-      this.updateSelectionBar();
-    }, { capture: true });
-    const end = (e) => {
-      if (!drag || e.pointerId !== drag.id) return;
-      e.stopPropagation();
-      if (drag.moved) { this.syncObstacles(); this.changed(); }
-      drag = null;
-    };
-    this.host.addEventListener('pointerup', end, { capture: true });
-    this.host.addEventListener('pointercancel', end, { capture: true });
-
+      if (!this.moving || e.target !== this.dom || e.pointerType !== 'mouse' || e.buttons || document.pointerLockElement) return;
+      this.moveTo(e.clientX, e.clientY);
+    });
+    document.addEventListener('mousemove', () => {
+      if (!this.moving || document.pointerLockElement !== this.dom) return;
+      const [x, y] = this.pointerXY({});
+      this.moveTo(x, y);
+    });
+    // keyboard: M move/place, R rotate, Delete remove, Esc cancels a move (before anything else sees Esc)
+    addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && this.moving) { this.cancelMove(); e.stopImmediatePropagation(); }
+    }, true);
     addEventListener('keydown', (e) => {
       if (e.target.closest?.('input, select, textarea') || !this.selected) return;
       if (e.code === 'Delete' || e.code === 'Backspace') { this.removeSelected(); e.preventDefault(); }
       if (e.code === 'KeyR') this.rotateSelected(e.shiftKey ? -15 : 15);
+      if (e.code === 'KeyM') { if (this.moving) this.finishMove(); else this.startMove(); }
     });
   }
 
@@ -436,6 +467,7 @@ export class Designer {
     sb.querySelector('[data-a="dup"]').addEventListener('click', () => this.duplicateSelected());
     sb.querySelector('[data-a="del"]').addEventListener('click', () => this.removeSelected());
     sb.querySelector('[data-a="close"]').addEventListener('click', () => this.select(null));
+    sb.querySelector('[data-a="move"]').addEventListener('click', () => (this.moving ? this.cancelMove() : this.startMove()));
     sb.querySelector('input[type=range]').addEventListener('input', (e) => {
       const it = this.selected;
       if (!it) return;
@@ -482,7 +514,10 @@ export class Designer {
     if (!it) { sb.hidden = true; return; }
     const c = CATALOG[it.type];
     sb.querySelector('.name').textContent = c.label;
-    sb.querySelector('.size').textContent = `${ftin(it.w)} × ${ftin(it.d)}`;
+    sb.querySelector('.size').textContent = this.moving ? 'Click where it should go' : `${ftin(it.w)} × ${ftin(it.d)}`;
+    const mv = sb.querySelector('[data-a="move"]');
+    mv.textContent = this.moving ? 'Cancel move' : 'Move';
+    mv.classList.toggle('on', !!this.moving);
     const range = sb.querySelector('.len');
     range.hidden = !c.resizable;
     if (c.resizable) { const r = range.querySelector('input'); r.value = it.w; range.querySelector('span').textContent = ftin(it.w); }

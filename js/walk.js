@@ -133,19 +133,47 @@ export class Walker {
     addEventListener('keyup', (e) => this.keys.delete(e.code));
     addEventListener('blur', () => this.keys.clear());
 
-    // drag to look (mouse or touch, any pointer that isn't on the joystick)
+    // Desktop: click the view to capture the mouse (pointer lock), then just move the mouse to
+    // look around, like a first-person game. Esc frees the mouse. Touch screens drag to look.
+    this.canLock = !matchMedia('(pointer: coarse)').matches && 'requestPointerLock' in this.dom;
+    this.lockRequestedAt = 0;
+    this.unlockedAt = 0;
+    document.addEventListener('pointerlockchange', () => {
+      const locked = document.pointerLockElement === this.dom;
+      if (!locked) { this.unlockedAt = performance.now(); this.keys.clear(); }
+      document.body.classList.toggle('mouse-locked', locked);
+      this.onLockChange?.(locked);
+    });
+    const noLock = () => { this.canLock = false; document.body.classList.add('no-lock'); this.onLockChange?.(false); };
+    document.addEventListener('pointerlockerror', noLock);
+    document.addEventListener('mousemove', (e) => {
+      if (!this.enabled || document.pointerLockElement !== this.dom) return;
+      const k = 0.0022;
+      this.yaw -= e.movementX * k;
+      this.pitch = THREE.MathUtils.clamp(this.pitch - e.movementY * k, -1.45, 1.45);
+    });
+
     const look = new Map();
     this.dom.addEventListener('pointerdown', (e) => {
       if (!this.enabled) return;
+      if (this.canLock && e.pointerType === 'mouse') {
+        if (document.pointerLockElement !== this.dom) {
+          this.lockRequestedAt = performance.now();
+          try { this.dom.requestPointerLock()?.catch?.(noLock); } catch { noLock(); }
+        }
+        return;
+      }
+      // drag to look: touch, or a mouse where the browser won't capture it
       look.set(e.pointerId, { x: e.clientX, y: e.clientY });
       this.dom.setPointerCapture(e.pointerId);
     });
     this.dom.addEventListener('pointermove', (e) => {
       const l = look.get(e.pointerId);
       if (!l || !this.enabled) return;
-      const k = e.pointerType === 'touch' ? 0.006 : 0.004;
+      // touch drags the view like a photo; a mouse turns the way it moves, as in games
+      const k = e.pointerType === 'touch' ? 0.006 : -0.004;
       this.yaw += (e.clientX - l.x) * k;
-      this.pitch = THREE.MathUtils.clamp(this.pitch + (e.clientY - l.y) * k, -1.35, 1.35);
+      this.pitch = THREE.MathUtils.clamp(this.pitch + (e.clientY - l.y) * k, -1.45, 1.45);
       l.x = e.clientX; l.y = e.clientY;
     });
     const end = (e) => look.delete(e.pointerId);
@@ -186,7 +214,16 @@ export class Walker {
     this.pitch = 0;
   }
 
-  disable() { this.enabled = false; this.keys.clear(); }
+  disable() {
+    this.enabled = false;
+    this.keys.clear();
+    if (document.pointerLockElement === this.dom) document.exitPointerLock();
+  }
+
+  // the click that captures the mouse shouldn't also count as a click on the scene
+  consumeLockClick() { return performance.now() - this.lockRequestedAt < 600; }
+
+  get mouseLocked() { return document.pointerLockElement === this.dom; }
 
   update(dt) {
     if (!this.enabled) return;
@@ -196,10 +233,10 @@ export class Walker {
     let f = 0, s = 0, turn = 0;
     if (k.has('KeyW') || k.has('ArrowUp')) f += 1;
     if (k.has('KeyS') || k.has('ArrowDown')) f -= 1;
-    if (k.has('KeyD')) s += 1;
-    if (k.has('KeyA')) s -= 1;
-    if (k.has('ArrowLeft') || k.has('KeyQ')) turn += 1;
-    if (k.has('ArrowRight') || k.has('KeyE')) turn -= 1;
+    if (k.has('KeyD') || k.has('ArrowRight')) s += 1;
+    if (k.has('KeyA') || k.has('ArrowLeft')) s -= 1;
+    if (k.has('KeyQ')) turn += 1;
+    if (k.has('KeyE')) turn -= 1;
     f -= this.joy.y; s += this.joy.x;
     this.yaw += turn * 1.8 * dt;
 

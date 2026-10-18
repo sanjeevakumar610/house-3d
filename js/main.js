@@ -117,14 +117,19 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   const moved = Math.hypot(e.clientX - press.x, e.clientY - press.y), quick = performance.now() - press.t < 400;
   press = null;
   if (moved > 6 || !quick) return;
-  if (designer.handleClick(e.clientX, e.clientY)) { roomInfo.hide(); return; }
-  const id = roomInfo.pick(e.clientX, e.clientY);
+  if (state.mode === 'walk' && walker.consumeLockClick()) return;
+  // with the mouse captured, clicks act at the crosshair in the middle of the screen
+  const [cx, cy] = designer.pointerXY(e);
+  if (designer.handleClick(cx, cy)) { roomInfo.hide(); return; }
+  const id = roomInfo.pick(cx, cy);
   if (id) roomInfo.show(id); else roomInfo.hide();
 });
 const hint = document.getElementById('hint');
 const HINTS = {
   orbit: mobile ? 'Drag to rotate · pinch to zoom · tap a room for its size' : 'Drag to rotate · scroll to zoom · right-drag to pan · click a room for its size',
-  walk: mobile ? 'Left pad to walk · drag to look · tap the floor for room size' : 'W A S D / arrows to walk · drag to look · Shift to run · click the floor for room size',
+  walk: mobile ? 'Left pad to walk · drag to look · tap the floor for room size' : 'Click the view to look around with the mouse · W A S D or arrows to move · Shift to run',
+  walkLocked: 'Mouse to look · W A S D to move · Shift to run · click a floor for its size · Esc frees the mouse',
+  walkDrag: 'Drag to look around · W A S D or arrows to move · Shift to run · click a floor for its size',
 };
 
 // "Go to" list: front of the house, then every room
@@ -166,7 +171,7 @@ function enterWalk() {
   const start = spots.find((p) => p.name.endsWith('Entrance')) || spots[0];
   gotoSel.value = spots.indexOf(start);
   walker.enable(start.x, start.y, start.level, 0);
-  hint.textContent = HINTS.walk;
+  hint.textContent = mobile || walker.canLock ? HINTS.walk : HINTS.walkDrag;
 }
 function exitWalk() {
   state.mode = 'orbit';
@@ -184,7 +189,13 @@ function exitWalk() {
 }
 document.getElementById('btn-walk').addEventListener('click', enterWalk);
 document.getElementById('btn-exit').addEventListener('click', exitWalk);
-addEventListener('keydown', (e) => { if (e.code === 'Escape' && state.mode === 'walk') exitWalk(); });
+// Esc first frees a captured mouse (the browser does that); a second Esc leaves walk mode
+addEventListener('keydown', (e) => {
+  if (e.code !== 'Escape' || state.mode !== 'walk') return;
+  if (walker.mouseLocked || performance.now() - walker.unlockedAt < 400) return;
+  exitWalk();
+});
+walker.onLockChange = (locked) => { if (state.mode === 'walk') hint.textContent = locked ? HINTS.walkLocked : walker.canLock ? HINTS.walk : HINTS.walkDrag; };
 hint.textContent = HINTS.orbit;
 
 camera.position.set(...VIEWS.house.cam);
