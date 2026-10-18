@@ -7,6 +7,7 @@ import { Walker } from './walk.js';
 import { centroid } from './geom.js';
 import { RoomInfo } from './dims.js';
 import { Designer } from './design.js';
+import { CostTab } from './cost/cost.js';
 
 const mobile = matchMedia('(pointer: coarse)').matches;
 if (mobile) document.body.classList.add('touch');
@@ -101,6 +102,10 @@ const designer = new Designer({
   plan, house, camera, dom: renderer.domElement, host, controls, walker,
   getView: () => state.view,
 });
+const costTab = new CostTab({ plan, house, designer });
+designer.onChange = () => costTab.designChanged();
+document.getElementById('btn-cost').addEventListener('click', () => { designer.setTool(null); roomInfo.hide(); costTab.show(); });
+addEventListener('keydown', (e) => { if (e.code === 'Escape' && costTab.open) costTab.hide(); });
 // the room panel and the design panel share the screen edge on phones
 document.querySelectorAll('#dock button').forEach((b) => b.addEventListener('click', () => roomInfo.hide()));
 
@@ -213,6 +218,6 @@ renderer.setAnimationLoop(() => {
 
 // handy for debugging from the console
 window.__house = {
-  scene, camera, controls, house, plan, renderer, walker, roomInfo, designer, enterWalk, exitWalk,
+  scene, camera, controls, house, plan, renderer, walker, roomInfo, designer, costTab, enterWalk, exitWalk,
   render() { if (state.mode !== 'walk') controls.update(); renderer.render(scene, camera); labelRenderer.render(scene, camera); },
 };

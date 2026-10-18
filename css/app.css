@@ -185,6 +185,64 @@ body.walking.touch .joystick { display: grid; }
   body.walking.touch .dock { bottom: 190px; }
 }
 
+/* ---------------------------------------------------------------- cost tab */
+button.secondary { border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; font: inherit; font-weight: 600; cursor: pointer; background: #fff; color: var(--ink); }
+body.walking #btn-cost { display: none; }
+body.costing .dock, body.costing .hint, body.costing .room-panel, body.costing .selection-bar, body.costing .design-panel { display: none; }
+.cost { position: fixed; inset: 0; z-index: 20; background: rgba(20, 28, 34, 0.35); overflow: auto; padding: max(12px, env(safe-area-inset-top)) 12px 24px; }
+.cost[hidden] { display: none; }
+.cost-inner { max-width: 1180px; margin: 0 auto; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 18px 20px 22px; }
+.cost-head { display: flex; gap: 12px; align-items: flex-start; }
+.cost-head h2 { margin: 0 0 4px; font-size: 20px; }
+.cost-head .lede { margin: 0; color: var(--muted); font-size: 13px; max-width: 760px; }
+.cost-close { margin-left: auto; flex: none; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #eef1f4; font-size: 20px; cursor: pointer; color: var(--muted); }
+.cost-totals { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 8px; margin: 16px 0 12px; }
+.cost-totals > div { background: #f5f7f9; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cost-totals span { font-size: 12px; color: var(--muted); }
+.cost-totals b { font-size: 16px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.cost-totals .grand { background: #fbefe8; border-color: #efc9b4; }
+.cost-totals .grand b { font-size: 21px; color: #8e3f1c; }
+.cost-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; }
+.cost-tools .spacer { flex: 1; }
+.cost-tools button, .cost-tabs button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 7px 12px; color: var(--ink); }
+.cost-tools button[data-act="xlsx"], .cost-tools button[data-act="pdf"] { font-weight: 600; }
+.cost-tools button:disabled { opacity: 0.6; cursor: progress; }
+.seg { display: flex; align-items: center; gap: 4px; }
+.seg span { color: var(--muted); margin-right: 4px; }
+.seg button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cost-tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin: 12px 0 0; }
+.cost-tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 8px 10px; }
+.cost-tabs button.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+.cost-body { padding-top: 10px; }
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.cost-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cost-tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; position: sticky; top: 0; background: #fff; }
+.cost-tbl td { padding: 5px 8px; border-bottom: 1px solid #f0f2f4; vertical-align: middle; }
+.cost-tbl td:first-child { min-width: 170px; }
+.cost-tbl .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cost-tbl .b { font-weight: 600; }
+.cost-tbl tr.cat td { background: #f5f7f9; font-weight: 700; font-size: 12px; color: var(--ink); padding-top: 8px; }
+.cost-tbl tfoot td { font-weight: 700; border-top: 2px solid var(--line); padding-top: 8px; }
+.cost-tbl input { width: 96px; text-align: right; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: #fffdf5; }
+.cost-tbl .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.2); vertical-align: -2px; margin-right: 6px; }
+.fine { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
+.assume { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.assume fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px 10px; margin: 0; }
+.assume legend { font-weight: 700; font-size: 13px; padding: 0 4px; }
+.assume label { display: grid; grid-template-columns: 1fr 80px 92px; align-items: center; gap: 8px; padding: 3px 0; font-size: 13px; }
+.assume input { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; text-align: right; background: #fffdf5; }
+.assume em { font-style: normal; color: var(--muted); font-size: 12px; }
+.cost-body h3 { font-size: 14px; margin: 16px 0 6px; }
+.notes { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12.5px; }
+.notes li { margin: 3px 0; }
+@media (max-width: 760px) {
+  .cost { padding: 0; }
+  .cost-inner { border-radius: 0; min-height: 100%; padding: 14px 12px 20px; }
+  .cost-totals { grid-template-columns: 1fr 1fr; }
+  .cost-totals .grand { grid-column: 1 / -1; }
+  .cost-tools .spacer { display: none; }
+}
+
 .loading { position: fixed; inset: 0; display: grid; place-items: center; font-size: 16px; color: var(--muted); pointer-events: none; }
 
 .room-label {
