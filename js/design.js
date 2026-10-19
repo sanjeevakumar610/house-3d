@@ -2,7 +2,7 @@
 // The design state is plain data (see snapshot()) so it can be saved, exported and costed.
 import * as THREE from 'three';
 import { pointInPoly } from './geom.js';
-import { FLOOR_FINISHES, floorMaterial } from './materials.js';
+import { FLOOR_FINISHES, floorMaterial, CLAD_LABEL } from './materials.js';
 import { CATALOG, DEFAULT_FURNITURE, makeModel, footprint } from './furniture.js';
 import { ftin } from './dims.js';
 
@@ -22,26 +22,20 @@ const store = {
 };
 
 export class Designer {
-  constructor({ plan, house, camera, dom, host, controls, walker, getView, onChange }) {
-    Object.assign(this, { plan, house, camera, dom, host, controls, walker, getView });
+  constructor({ plan, house, camera, dom, host, controls, walker, getView, onChange, getVariant, requestVariant }) {
+    Object.assign(this, { plan, house, camera, dom, host, controls, walker, getView, getVariant, requestVariant });
     this.onChange = onChange || (() => {});
     this.tool = null;              // null | 'paint' | 'floor' | 'furniture' | 'save'
     this.color = PALETTE[0][1];
     this.finish = 'marble';
-    this.paint = {};               // face key → colour
+    this.paint = {};               // interior face key → colour
+    this.extPaint = {};            // style id → { exterior face key → colour }
     this.floors = {};              // room id → finish key
     this.items = [];               // { id, type, x, y, rot, w, d, floor, group }
     this.selected = null;
     this.nextId = 1;
     this.ray = new THREE.Raycaster();
-    // furniture lives in each storey's group so it hides with its floor
-    this.furnGroups = {};
-    for (const fk of ['gf', 'uf']) {
-      this.furnGroups[fk] = new THREE.Group();
-      this.furnGroups[fk].name = 'furniture-' + fk;
-      house.groups[fk].add(this.furnGroups[fk]);
-    }
-    this.roomFinishDefault = Object.fromEntries(house.rooms.map((r) => [r.id, r.finish]));
+    this.attachGroups();
 
     this.buildUI();
     this.bindPointer();
@@ -49,35 +43,85 @@ export class Designer {
     this.load(saved || this.defaultDesign(), false);
   }
 
+  // furniture lives in each storey's group so it hides with its floor
+  attachGroups() {
+    this.furnGroups = {};
+    for (const fk of this.plan.floorKeys) {
+      this.furnGroups[fk] = new THREE.Group();
+      this.furnGroups[fk].name = 'furniture-' + fk;
+      this.house.groups[fk].add(this.furnGroups[fk]);
+    }
+    this.roomFinishDefault = Object.fromEntries(this.house.rooms.map((r) => [r.id, r.finish]));
+  }
+
+  get styleId() { return this.plan.style?.id || 'original'; }
+
+  // the house was rebuilt for another floor count or style: carry the design over
+  setHouse(plan, house, design) {
+    const snap = design || this.snapshot();
+    this.cancelMove();
+    this.select(null);
+    for (const it of this.items) it.group.removeFromParent();
+    this.plan = plan;
+    this.house = house;
+    this.attachGroups();
+    this.load(snap, false, true);
+  }
+
   // ------------------------------------------------------------ state
   defaultDesign() {
-    return { version: 1, paint: {}, floors: {}, furniture: DEFAULT_FURNITURE.map((f) => ({ ...f, floor: f.floor || 'gf' })) };
+    return { version: 2, paint: {}, extPaint: {}, floors: {}, furniture: DEFAULT_FURNITURE.map((f) => ({ ...f, floor: f.floor || 'gf' })) };
   }
 
   snapshot() {
     return {
-      version: 1,
+      version: 2,
       savedAt: new Date().toISOString(),
+      variant: this.getVariant?.(),
       paint: { ...this.paint },
+      extPaint: structuredClone(this.extPaint),
       floors: { ...this.floors },
+      uf2Seeded: !!this.uf2Seeded,
       furniture: this.items.map(({ type, x, y, rot, w, d, floor }) => ({ type, x: +x.toFixed(3), y: +y.toFixed(3), rot: +rot.toFixed(4), w, d, floor })),
     };
   }
 
-  load(design, notify = true) {
-    // paint
+  load(design, notify = true, sameVariant = false) {
+    // a saved design brings its floor count and style with it
+    if (!sameVariant && design.variant && this.requestVariant) {
+      const v = this.getVariant();
+      if (v.floors !== design.variant.floors || v.style !== design.variant.style) { this.requestVariant(design.variant, design, notify); return; }
+    }
+    // paint: interior colours, and outside colours per style (older saves had them mixed in)
+    const faces = this.house.faces;
     this.paint = {};
-    for (const f of this.house.faces.values()) f.material.color.set(f.defaultColor);
-    for (const [k, c] of Object.entries(design.paint || {})) this.setFaceColor(k, c, false);
+    this.extPaint = structuredClone(design.extPaint || {});
+    for (const f of faces.values()) f.material.color.set(f.defaultColor);
+    for (const [k, c] of Object.entries(design.paint || {})) {
+      const f = faces.get(k);
+      if (f?.exterior) { if (!design.extPaint) (this.extPaint.original ||= {})[k] = c; continue; }
+      this.paint[k] = c; // kept even when that floor isn't built right now
+      if (f) f.material.color.set(c);
+    }
+    for (const [k, c] of Object.entries(this.extPaint[this.styleId] || {})) faces.get(k)?.material.color.set(c);
     // floors
-    this.floors = {};
-    for (const r of this.house.rooms) if (r.finish) r.floorMesh.material = floorMaterial(r.finish);
-    for (const [id, fin] of Object.entries(design.floors || {})) this.setFloor(id, fin, false);
-    // furniture
+    this.floors = { ...(design.floors || {}) };
+    for (const r of this.house.rooms) {
+      if (!r.finish) continue;
+      const fin = FLOOR_FINISHES[this.floors[r.id]] ? this.floors[r.id] : r.finish;
+      r.floorMesh.material = floorMaterial(fin);
+    }
+    // furniture (items on a floor that isn't built right now are kept, just not shown)
     this.select(null);
     for (const it of this.items) it.group.removeFromParent();
     this.items = [];
     for (const f of design.furniture || []) this.addItem(f, false);
+    this.uf2Seeded = !!design.uf2Seeded;
+    if (this.plan.floors.uf2 && !this.uf2Seeded) {
+      // first time with a second floor: furnish it like the first floor
+      if (!this.items.some((it) => it.floor === 'uf2')) for (const f of DEFAULT_FURNITURE.filter((q) => q.floor === 'uf')) this.addItem({ ...f, floor: 'uf2' }, false);
+      this.uf2Seeded = true;
+    }
     this.syncObstacles();
     if (notify) this.changed();
   }
@@ -96,7 +140,8 @@ export class Designer {
     const f = this.house.faces.get(key);
     if (!f) return;
     f.material.color.set(color);
-    if (color.toLowerCase() === f.defaultColor.toLowerCase()) delete this.paint[key]; else this.paint[key] = color;
+    const map = f.exterior ? (this.extPaint[this.styleId] ||= {}) : this.paint;
+    if (color.toLowerCase() === f.defaultColor.toLowerCase()) delete map[key]; else map[key] = color;
     if (notify) this.changed();
   }
 
@@ -126,11 +171,11 @@ export class Designer {
   }
 
   // ------------------------------------------------------------ furniture
-  storeyRooms(floor) { return this.plan.floors[floor].rooms; }
+  storeyRooms(floor) { return this.plan.floors[floor]?.rooms || []; }
 
   levelAt(floor, x, y) {
     const r = this.storeyRooms(floor).find((q) => pointInPoly([x, y], q.poly));
-    return r ? r.level : floor === 'gf' ? 0 : this.plan.levels.uf;
+    return r ? r.level : floor === 'gf' ? 0 : this.plan.meta[floor]?.ffl ?? 0;
   }
 
   addItem(spec, select = true) {
@@ -139,7 +184,7 @@ export class Designer {
     const it = { id: this.nextId++, type: spec.type, x: spec.x, y: spec.y, rot: spec.rot || 0, w: spec.w || cat.w, d: spec.d || cat.d, floor: spec.floor || 'gf' };
     it.group = new THREE.Group();
     it.group.userData = { type: 'furniture', itemId: it.id };
-    this.furnGroups[it.floor === 'uf' ? 'uf' : 'gf'].add(it.group);
+    this.furnGroups[it.floor]?.add(it.group);
     this.rebuildItem(it);
     this.items.push(it);
     if (select) { this.select(it); this.syncObstacles(); this.changed(); }
@@ -215,7 +260,7 @@ export class Designer {
       return { floor: f, x: this.walker.pos.x - s * 4, y: this.walker.pos.y - c * 4 };
     }
     const view = this.getView();
-    const floor = view === 'uf' ? 'uf' : 'gf';
+    const floor = this.plan.floorKeys.includes(view) ? view : 'gf';
     const t = this.controls.target;
     const rooms = this.storeyRooms(floor).filter((r) => !r.stair && !r.outdoor);
     const inside = rooms.find((r) => pointInPoly([t.x, t.z], r.poly));
@@ -225,7 +270,7 @@ export class Designer {
   }
 
   syncObstacles() {
-    this.walker.setObstacles(this.items.map((it) => {
+    this.walker.setObstacles(this.items.filter((it) => this.plan.floors[it.floor]).map((it) => {
       const fp = footprint(it.type, it.w, it.d);
       return { x: it.x, y: it.y, hw: fp.w / 2, hd: fp.d / 2, rot: it.rot, floor: it.floor, low: it.type === 'coffee-table' };
     }));
@@ -307,6 +352,7 @@ export class Designer {
     if (this.moving) { this.moveTo(x, y); this.finishMove(); return true; }
     if (this.tool === 'paint') {
       const h = this.hitAt(x, y, [this.house.root]);
+      if (h && h.object.userData.type === 'clad') { this.toast(`This wall has ${CLAD_LABEL[h.object.userData.clad].toLowerCase()} in this style. Paint shows on rendered walls only`); return true; }
       const key = h && h.object.userData.type === 'wall' ? h.object.userData.faces?.[h.face.materialIndex] : null;
       if (key) this.paintFace(key); else this.toast('Click on a wall to paint it');
       return true;
@@ -396,9 +442,10 @@ export class Designer {
     }));
     floor.querySelector(`.fin[data-k="${this.finish}"]`).classList.add('on');
     floor.querySelector('#floor-all').addEventListener('click', () => {
-      const fk = this.lastFloorRoom?.floor || (this.getView() === 'uf' ? 'uf' : 'gf');
+      const view = this.getView();
+      const fk = this.lastFloorRoom?.floor || (this.plan.floorKeys.includes(view) ? view : 'gf');
       for (const r of this.house.rooms) if (r.floor === fk && r.finish && !r.data.outdoor && !r.data.wet) this.setFloor(r.id, this.finish, false);
-      this.toast(`${FLOOR_FINISHES[this.finish].label} in all ${fk === 'gf' ? 'ground' : 'upper'} floor rooms (baths unchanged)`);
+      this.toast(`${FLOOR_FINISHES[this.finish].label} in all ${this.plan.meta[fk].name.toLowerCase()} rooms (baths unchanged)`);
       this.changed();
     });
     // texture previews
@@ -411,12 +458,12 @@ export class Designer {
     const furn = document.createElement('div');
     const groups = {};
     for (const [k, c] of Object.entries(CATALOG)) (groups[c.group] ||= []).push([k, c]);
-    furn.innerHTML = `<p class="help">Tap an item to add it. Drag furniture to move it; tap it for rotate and delete.</p>` +
+    furn.innerHTML = `<p class="help">Tap an item to add it. Click a piece to select it, then use Move, rotate or Delete.</p>` +
       Object.entries(groups).map(([g, list]) => `<h4>${g}</h4><div class="catalog">${list.map(([k, c]) => `<button data-k="${k}"><b>${c.label}</b><span>${ftin(c.w)} × ${ftin(c.d)}</span></button>`).join('')}</div>`).join('');
     furn.querySelectorAll('.catalog button').forEach((b) => b.addEventListener('click', () => {
       const p = this.dropPoint();
       this.addItem({ type: b.dataset.k, ...p, rot: this.walker.enabled ? this.walker.yaw + Math.PI : 0 });
-      this.toast(`Added ${CATALOG[b.dataset.k].label}. Drag it into place`);
+      this.toast(`Added ${CATALOG[b.dataset.k].label}. Press Move to place it`);
     }));
 
     // save panel

@@ -1,12 +1,7 @@
 // Unit prices (LKR) and estimating assumptions. Rates are rough PLACEHOLDERS for Colombo,
 // meant to be replaced with current quotes in the Cost tab. Material only, no labour.
 
-export const SECTIONS = [
-  ['fd', 'Foundation'],
-  ['gf', 'Ground floor'],
-  ['uf', 'Upper floor'],
-  ['roof', 'Roof & tank'],
-];
+// Cost sections depend on the variant (G+1 / G+2, pitched or flat roof): see sectionsFor() in quantities.js.
 
 // key → [category, description, unit, placeholder rate]
 export const PRICE_LIST = {
@@ -29,6 +24,7 @@ export const PRICE_LIST = {
   granite: ['Floor & wall finishes', 'Granite flooring', 'sq ft', 950],
   wood: ['Floor & wall finishes', 'Wood flooring', 'sq ft', 750],
   paving: ['Floor & wall finishes', 'Paving blocks', 'sq ft', 180],
+  terracotta: ['Floor & wall finishes', 'Terracotta tiles', 'sq ft', 320],
   wallTiles: ['Floor & wall finishes', 'Wall tiles', 'sq ft', 260],
   graniteTop: ['Floor & wall finishes', 'Kitchen counter granite top', 'sq ft', 950],
   paintInt: ['Paint', 'Interior emulsion', 'litre', 2600],
@@ -44,10 +40,35 @@ export const PRICE_LIST = {
   glassCover: ['Roofing', 'Light-well glass cover', 'sq ft', 2500],
   canopySheet: ['Roofing', 'Car porch canopy sheets', 'sq ft', 450],
   canopySteel: ['Roofing', 'Car porch canopy steel frame', 'kg', 650],
-  ceiling: ['Other', 'Ceiling boards with frame (upper floor)', 'sq ft', 280],
+  roofWaterproof: ['Roofing', 'Roof terrace waterproofing membrane', 'sq ft', 380],
+  coping: ['Roofing', 'Parapet coping, precast', 'rft', 600],
+  skylight: ['Roofing', 'Louvred skylight over the light well', 'sq ft', 6000],
+  glassCanopy: ['Roofing', 'Glass car porch canopy with frame', 'sq ft', 3800],
+  ceiling: ['Other', 'Ceiling boards with frame (under a pitched roof)', 'sq ft', 280],
   railing: ['Other', 'Steel railings and handrails', 'rft', 4500],
+  glassRail: ['Other', 'Toughened glass railing with fittings', 'rft', 14000],
+  timberRail: ['Other', 'Timber railing', 'rft', 6500],
+  vent: ['Other', 'Aluminium louvre vents above sliding doors', 'rft', 3500],
   screen: ['Other', 'Timber screen', 'sq ft', 3500],
   waterproof: ['Other', 'Waterproofing (baths, balconies)', 'sq ft', 120],
+  cladBrick: ['Facade & style', 'Brick slip cladding', 'sq ft', 550],
+  cladStone: ['Facade & style', 'Stone cladding', 'sq ft', 650],
+  cladGranite: ['Facade & style', 'Black granite cladding', 'sq ft', 1400],
+  cladConcrete: ['Facade & style', 'Board-marked concrete finish', 'sq ft', 450],
+  cladTimber: ['Facade & style', 'Timber-look (WPC) cladding', 'sq ft', 900],
+  cladCharred: ['Facade & style', 'Charred timber cladding', 'sq ft', 1100],
+  greenWall: ['Facade & style', 'Green wall with planting and drip line', 'sq ft', 2800],
+  fins: ['Facade & style', 'Timber-look aluminium fins', 'rft', 2400],
+  finsGold: ['Facade & style', 'Brass-finish aluminium fins', 'rft', 4200],
+  perfScreen: ['Facade & style', 'Perforated metal screen with frame', 'sq ft', 2200],
+  jali: ['Facade & style', 'Breeze blocks (jali)', 'sq ft', 650],
+  planter: ['Facade & style', 'Built-in planter boxes with plants', 'rft', 7500],
+  trim: ['Facade & style', 'Metal trim bands at floor levels', 'rft', 1800],
+  copingTerracotta: ['Facade & style', 'Terracotta round coping', 'rft', 950],
+  blades: ['Facade & style', 'Sunshade blades and canopies', 'sq ft', 2000],
+  pergola: ['Facade & style', 'Pergola (timber or steel)', 'sq ft', 2400],
+  gate: ['Facade & style', 'Front gate and fence panels', 'sq ft', 7000],
+  garden: ['Facade & style', 'Front garden (plants, gravel, stones)', 'sq ft', 900],
 };
 
 // Doors and windows, priced each (complete with frame and ironmongery)
@@ -56,6 +77,16 @@ export const OPENING_PRICES = {
   W01: 81000, W02: 54000, W03: 34000, W04: 20500,
   SD01: 105000, SD02: 105000, SD03: 157500, SD04: 91000, SD05: 168000, F01: 18000,
 };
+
+// Base price for a window or door without a listed price: its area at a typical aluminium rate.
+const PER_SQFT = { window: 3000, sliding: 3000, fixed: 2400, door: 2600 };
+export function openingBaseRate(tag, schedule) {
+  if (OPENING_PRICES[tag] != null) return OPENING_PRICES[tag];
+  const base = tag.replace(/[A-Z]$/, '');
+  const s = schedule[tag];
+  if (OPENING_PRICES[base] != null && s && schedule[base]) return Math.round((OPENING_PRICES[base] * (s.w * s.h)) / (schedule[base].w * schedule[base].h) / 500) * 500;
+  return s ? Math.round(((s.w * s.h) * (PER_SQFT[s.kind] || 3000)) / 500) * 500 : 0;
+}
 
 export const DEFAULT_RATES = Object.fromEntries([
   ...Object.entries(PRICE_LIST).map(([k, v]) => [k, v[3]]),
@@ -87,7 +118,9 @@ export const ASSUMPTIONS = {
   rafter: ['Rafter spacing', 'ft', 2, 'Roof'],
   batten: ['Batten / purlin spacing', 'ft', 3, 'Roof'],
   sheetCover: ['Effective cover per roof sheet', 'sq ft', 22.5, 'Roof'],
-  ufCeiling: ['Ceiling boards on upper floor (1 = yes, 0 = no)', '', 1, 'Finishes'],
+  ufCeiling: ['Ceiling boards under a pitched roof (1 = yes, 0 = no)', '', 1, 'Finishes'],
+  g2Footing: ['G+2 footing size (estimate only, needs an engineer)', 'ft', 4, 'Structure'],
+  g2FootingD: ['G+2 footing depth', 'in', 12, 'Structure'],
 };
 export const DEFAULT_ASSUMPTIONS = Object.fromEntries(Object.entries(ASSUMPTIONS).map(([k, v]) => [k, v[2]]));
 
@@ -100,5 +133,8 @@ export const NOTES = [
   'Bricks at 5.5 per sq ft of half-brick wall; cement blocks at 1.05 per sq ft. Openings and columns are deducted from wall areas.',
   'Dry volume factors: concrete ×1.54, mortar ×1.30. One cement bag = 1.226 cu ft. One cube = 100 cu ft.',
   'Paint litres follow the colours on the model: dark colours get extra coats. Bathrooms are tiled to the set height; the kitchen backsplash follows the counters placed in the model.',
+  'G+2: footings are upsized (4\'-0" × 4\'-0" × 12", T12 / T16 mesh) and ground and first floor columns get 4T16. This is an estimate only: a structural engineer must design a three-storey frame.',
+  'Flat-roof styles: roof slab with its overhang, beams under the top floor walls, waterproofing with upturns, 50 mm screed, parapet coping, a stair-head room and a louvred skylight over the light well.',
+  'Facade styles: cladding, fins, screens, planters, trims, gate and garden are in the "Facade & style" column. Window and sliding door prices are multiplied by the style\'s frame finish factor (shown on each row).',
   'Rates are placeholders. Replace them with current Colombo market prices.',
 ];

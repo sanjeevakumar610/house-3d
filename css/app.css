@@ -205,7 +205,9 @@ body.costing .dock, body.costing .hint, body.costing .room-panel, body.costing .
 .cost-head h2 { margin: 0 0 4px; font-size: 20px; }
 .cost-head .lede { margin: 0; color: var(--muted); font-size: 13px; max-width: 760px; }
 .cost-close { margin-left: auto; flex: none; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #eef1f4; font-size: 20px; cursor: pointer; color: var(--muted); }
-.cost-totals { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 8px; margin: 16px 0 12px; }
+.cost-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 16px 0 12px; }
+.cost-totals .grand { grid-column: span 2; }
+.cost-head h2 .variant { display: inline-block; margin-left: 8px; padding: 2px 9px; border-radius: 999px; background: #eef1f4; color: var(--muted); font-size: 13px; font-weight: 600; vertical-align: 2px; }
 .cost-totals > div { background: #f5f7f9; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .cost-totals span { font-size: 12px; color: var(--muted); }
 .cost-totals b { font-size: 16px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
@@ -248,6 +250,7 @@ body.costing .dock, body.costing .hint, body.costing .room-panel, body.costing .
   .cost { padding: 0; }
   .cost-inner { border-radius: 0; min-height: 100%; padding: 14px 12px 20px; }
   .cost-totals { grid-template-columns: 1fr 1fr; }
+  .cost-head h2 .variant { display: block; margin: 4px 0 0; width: fit-content; }
   .cost-totals .grand { grid-column: 1 / -1; }
   .cost-tools .spacer { display: none; }
 }
@@ -264,4 +267,65 @@ body.costing .dock, body.costing .hint, body.costing .room-panel, body.costing .
   .brand { display: none; }
   .views button { padding: 6px 8px; font-size: 13px; }
   .hint { font-size: 11px; }
+}
+
+/* ---------------------------------------------------------------- floors + facade style */
+.bar .floors { background: #eef1f4; border-radius: 9px; padding: 2px; gap: 0; }
+.bar .floors button { border: 0; background: transparent; padding: 7px 10px; border-radius: 7px; font: inherit; font-weight: 600; color: var(--muted); cursor: pointer; }
+.bar .floors button.on { background: var(--accent); color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); }
+#btn-style b { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 4px; padding: 0 5px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 12px; }
+body.walking .floors { display: none; }
+body.costing .style-panel { display: none; }
+
+.style-panel {
+  position: fixed; left: max(12px, env(safe-area-inset-left)); top: 76px; bottom: max(52px, calc(env(safe-area-inset-bottom) + 44px));
+  width: 360px; display: flex; flex-direction: column; overflow: hidden; z-index: 5;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+}
+.style-panel[hidden] { display: none; }
+.style-panel header { display: flex; align-items: center; gap: 8px; padding: 12px 12px 8px 16px; }
+.style-panel h3 { margin: 0; font-size: 17px; flex: 1; }
+.style-panel .steps { display: flex; gap: 4px; }
+.style-panel .steps button, .style-panel .close { width: 30px; height: 30px; border: 0; border-radius: 50%; background: #eef1f4; font-size: 18px; line-height: 1; cursor: pointer; color: var(--ink); }
+.style-panel .close { color: var(--muted); }
+.style-panel .styles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 12px 10px; overflow: auto; flex: none; max-height: 52%; }
+.style-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font: inherit; text-align: left; cursor: pointer; color: var(--ink); }
+.style-card:hover { border-color: var(--accent); }
+.style-card.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.style-card b { font-size: 13px; line-height: 1.2; }
+.style-card b em { font-style: normal; display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 6px; border-radius: 50%; background: #eef1f4; font-size: 11px; color: var(--muted); }
+.style-card.on b em { background: var(--accent); color: #fff; }
+.style-card small { color: var(--muted); font-size: 11px; }
+.sw-strip { display: inline-flex; width: 100%; height: 10px; border-radius: 4px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.1); }
+.sw-strip i { flex: 1; }
+.style-info { border-top: 1px solid var(--line); padding: 10px 16px 14px; overflow: auto; flex: 1; font-size: 13px; }
+.style-info h4 { margin: 0 0 4px; font-size: 15px; }
+.style-info h4 span { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 4px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; vertical-align: 1px; }
+.style-info p { margin: 0 0 8px; color: var(--ink); }
+.style-info h5 { margin: 8px 0 2px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.style-info ul { margin: 0; padding-left: 18px; }
+.style-info li { margin: 2px 0; }
+.style-info .cautions li { color: #8e3f1c; }
+body.styling .room-panel { display: none; }
+
+.compare-empty { padding: 18px 4px; }
+.compare-empty p { margin: 0 0 10px; color: var(--muted); }
+.cost-tbl.compare td:nth-child(2) { min-width: 220px; }
+.cost-tbl.compare .sw-strip { width: 46px; height: 12px; margin-right: 8px; vertical-align: -2px; }
+.cost-tbl.compare tr.on td { background: #fbefe8; }
+.cost-tbl.compare .up { color: #8e3f1c; }
+.cost-tbl.compare .down { color: #2d6a3e; }
+.cost-tbl.compare button { font: inherit; font-size: 12px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+.fine button.link { border: 0; background: none; padding: 0; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
+
+@media (max-width: 760px) {
+  .style-panel { top: auto; left: 8px; right: 8px; width: auto; max-height: 56vh; bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px)); }
+  .style-panel .styles { display: flex; overflow-x: auto; overflow-y: hidden; max-height: none; padding-bottom: 8px; scroll-snap-type: x proximity; }
+  .style-card { flex: 0 0 132px; scroll-snap-align: start; }
+  body.styling .dock { display: none; }
+}
+@media (max-width: 560px) {
+  .bar .floors button { padding: 6px 7px; font-size: 13px; }
+  #btn-style, #btn-cost, #btn-walk { padding: 6px 10px; }
 }

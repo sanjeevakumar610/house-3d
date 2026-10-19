@@ -20,11 +20,12 @@
 
   <header class="bar">
     <div class="brand">House 3D</div>
-    <nav class="views" role="tablist" aria-label="View">
-      <button data-view="house" class="active" role="tab">Whole house</button>
-      <button data-view="gf" role="tab">Ground floor</button>
-      <button data-view="uf" role="tab">Upper floor</button>
-    </nav>
+    <nav class="views" role="tablist" aria-label="View"></nav>
+    <div class="seg floors" role="group" aria-label="Number of floors">
+      <button data-floors="2" title="Ground + 1 floor (as drawn)">G+1</button>
+      <button data-floors="3" title="Ground + 2 floors">G+2</button>
+    </div>
+    <button id="btn-style" class="secondary" title="Facade style (keys 0-9)">Style <b id="style-num">0</b></button>
     <div class="toggles">
       <label><input type="checkbox" id="tgl-roof" checked> Roof</label>
       <label><input type="checkbox" id="tgl-labels" checked> Labels</label>
@@ -65,6 +66,19 @@
     <button class="close" aria-label="Close">×</button>
     <h3></h3>
     <div class="body"></div>
+  </aside>
+
+  <aside id="style-panel" class="style-panel" hidden aria-label="Facade style">
+    <header>
+      <h3>Facade style</h3>
+      <div class="steps">
+        <button data-step="-1" aria-label="Previous style">‹</button>
+        <button data-step="1" aria-label="Next style">›</button>
+      </div>
+      <button class="close" aria-label="Close">×</button>
+    </header>
+    <div class="styles"></div>
+    <div class="style-info"></div>
   </aside>
 
   <div id="selection-bar" class="selection-bar" hidden>

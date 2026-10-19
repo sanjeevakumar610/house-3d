@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { pointInPoly, distToSegment } from './geom.js';
 import { stairSteps } from './build.js';
+import { floorAtHeight } from './variant.js';
 
 const EYE = 5.25;        // eye height above the floor, ft (≈ 1.6 m)
 const RADIUS = 0.75;     // body radius, ft
@@ -31,14 +32,16 @@ export class Walker {
     this.bindInput();
   }
 
+  // a different variant of the house (floor count or style)
+  setPlan(plan) { this.plan = plan; this.buildColliders(); }
+
   // ------------------------------------------------------------ world data
   buildColliders() {
-    const P = this.plan, L = P.levels, slabBottom = L.uf - P.slab;
+    const P = this.plan;
     const segs = [];
-    for (const [fk, fl] of Object.entries(P.floors)) {
-      const ffl = fk === 'gf' ? L.gf : L.uf;
-      const zb = fk === 'gf' ? 0 : slabBottom;
-      const zt = fk === 'gf' ? slabBottom : L.ufEaves;
+    for (const fk of P.floorKeys) {
+      const fl = P.floors[fk], m = P.meta[fk];
+      const ffl = m.ffl, zb = m.zb, zt = m.ceil;
       for (const w of fl.walls) {
         const top = w.height != null ? ffl + w.height : zt;
         const ux = (w.b[0] - w.a[0]) / w.length, uy = (w.b[1] - w.a[1]) / w.length;
@@ -51,21 +54,27 @@ export class Walker {
       for (const c of fl.columns) segs.push({ a: c, b: c, r: 0.375, bottom: zb, top: zt, floor: fk });
     }
     // stair handrails: the open sides of the flights and winders
-    const S = P.stair, base = S.base;
-    segs.push({ a: [S.lower.x[7], S.lower.y2 - 0.1], b: [S.lower.x[0], S.lower.y2 - 0.1], r: 0.05, bottom: 0, top: 12, floor: 'gf' });
-    segs.push({ a: [S.winder.x, S.upper.y + 0.1], b: [S.upper.x[7], S.upper.y + 0.1], r: 0.05, bottom: base + 3, top: 12, floor: 'gf', onStairOnly: true });
+    P.stairs.forEach((S, i) => {
+      if (i === 0) {
+        segs.push({ a: [S.lower.x[7], S.lower.y2 - 0.1], b: [S.lower.x[0], S.lower.y2 - 0.1], r: 0.05, bottom: 0, top: 12, floor: 'gf' });
+        segs.push({ a: [S.winder.x, S.upper.y + 0.1], b: [S.upper.x[7], S.upper.y + 0.1], r: 0.05, bottom: S.base + 3, top: 12, floor: 'gf', onStairOnly: true });
+      } else {
+        // stacked flights: the rail along the gap between them
+        segs.push({ a: [S.winder.x2, S.upper.y2], b: [S.lower.x[0], S.upper.y2], r: 0.06, bottom: S.base, top: S.base + 12, floor: S.from });
+      }
+    });
     this.segs = segs;
 
     // walkable surfaces: room floors, stair treads; outside everything is the ground (0)
     this.surfaces = [];
-    for (const fl of Object.values(P.floors)) for (const r of fl.rooms) {
+    for (const fk of P.floorKeys) for (const r of P.floors[fk].rooms) {
       this.surfaces.push({ top: r.level, bottom: r.level > 5 ? r.level - 0.5 : 0, contains: (p) => pointInPoly(p, r.poly) });
     }
-    for (const st of stairSteps(P)) {
+    for (const S of P.stairs) for (const st of stairSteps(S)) {
       const bottom = st.solid ? S.base : st.top - S.riser - 0.45;
       this.surfaces.push({ top: st.top, bottom, contains: ([x, y]) => x >= st.x0 && x <= st.x1 && y >= st.y0 && y <= st.y1 });
     }
-    this.stairBox = { x0: S.winder.x, x1: S.lower.x[0], y0: S.upper.y, y1: S.lower.y2 };
+    this.stairBoxes = P.stairs.map((S) => ({ x0: S.winder.x, x1: S.lower.x[0], y0: S.upper.y, y1: S.lower.y2, base: S.base }));
   }
 
   // furniture footprints: { x, y, hw, hd, rot, floor } (rotated rectangles)
@@ -98,9 +107,9 @@ export class Walker {
   }
 
   collide(p) {
-    const onStair = p.x >= this.stairBox.x0 && p.x <= this.stairBox.x1 && p.y >= this.stairBox.y0 && p.y <= this.stairBox.y1 && this.feet > this.plan.stair.base + 1;
+    const onStair = this.stairBoxes.some((b) => p.x >= b.x0 && p.x <= b.x1 && p.y >= b.y0 && p.y <= b.y1 && this.feet > b.base + 1);
     // only the walls of the storey you are on; the stair's top steps already count as upstairs
-    const floor = this.feet >= this.plan.levels.uf - 0.6 ? 'uf' : 'gf';
+    const floor = floorAtHeight(this.plan, this.feet);
     for (let it = 0; it < 4; it++) {
       let moved = false;
       for (const s of this.segs) {
@@ -267,5 +276,5 @@ export class Walker {
   }
 
   // which floor the walker is on
-  get floor() { return this.feet > this.plan.levels.uf - 1 ? 'uf' : 'gf'; }
+  get floor() { return floorAtHeight(this.plan, this.feet); }
 }

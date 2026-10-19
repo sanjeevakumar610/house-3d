@@ -11,7 +11,7 @@ export const ftin = (f) => {
   return `${neg ? '−' : ''}${ft}'-${inch}"`;
 };
 export const metres = (f) => (f * 0.3048).toFixed(2);
-const KIND = { door: 'door', sliding: 'sliding door', window: 'window', arch: 'arch' };
+const KIND = { door: 'door', sliding: 'sliding door', window: 'window', arch: 'arch', fixed: 'fixed glass', vent: 'louvre vent' };
 
 export class RoomInfo {
   constructor(plan, house, camera, dom) {
@@ -29,10 +29,20 @@ export class RoomInfo {
     this.indexOpenings();
   }
 
+  // a different variant of the house (floor count or style)
+  setHouse(plan, house) {
+    this.hide();
+    this.plan = plan;
+    this.house = house;
+    house.root.add(this.group);
+    this.indexOpenings();
+  }
+
   // which rooms each opening connects (looked up once)
   indexOpenings() {
     this.openings = {};
-    for (const fl of Object.values(this.plan.floors)) {
+    for (const fk of this.plan.floorKeys) {
+      const fl = this.plan.floors[fk];
       for (const w of fl.walls) for (const o of w.openings) {
         const ux = (w.b[0] - w.a[0]) / w.length, uy = (w.b[1] - w.a[1]) / w.length;
         const c = (o.from + o.to) / 2, mid = [w.a[0] + ux * c, w.a[1] + uy * c], off = w.thickness / 2 + 0.3;
@@ -47,8 +57,8 @@ export class RoomInfo {
   }
 
   roomById(id) {
-    for (const [fk, fl] of Object.entries(this.plan.floors)) {
-      const r = fl.rooms.find((q) => q.id === id);
+    for (const fk of this.plan.floorKeys) {
+      const r = this.plan.floors[fk].rooms.find((q) => q.id === id);
       if (r) return { room: r, floor: fk };
     }
     return null;
@@ -65,7 +75,7 @@ export class RoomInfo {
       const t = h.object.userData.type;
       if (t === 'glass' || inGroup(h.object, 'roof') || inGroup(h.object, 'ufCeiling') || inGroup(h.object, 'room-dims')) continue;
       if (t === 'floor') return h.object.userData.roomId;
-      if (t === 'stair') return h.object.userData.top > 6 ? 'uf-landing' : 'gf-stair';
+      if (t === 'stair') return h.object.userData.roomId;
       return null; // a wall or something else is in front
     }
     return null;
@@ -77,7 +87,6 @@ export class RoomInfo {
     const { room: r, floor } = found;
     this.clear3d();
     this.current = id;
-    const L = this.plan.levels;
 
     // highlight + side lengths drawn on the floor
     const fill = new THREE.Mesh(flatPoly(r.poly, r.level + 0.03, true),
@@ -108,19 +117,19 @@ export class RoomInfo {
     const [x0, y0, x1, y1] = r.bbox;
     const W = x1 - x0, D = y1 - y0;
     const rect = r.poly.length === 4 && r.poly.every(([x, y]) => (Math.abs(x - x0) < 0.05 || Math.abs(x - x1) < 0.05) && (Math.abs(y - y0) < 0.05 || Math.abs(y - y1) < 0.05));
-    const ceiling = floor === 'gf' ? L.uf - this.plan.slab : L.ufEaves;
-    const ch = ceiling - r.level;
+    const m = this.plan.meta[floor];
+    const ch = m.ceil - r.level;
     let perim = 0;
     for (let i = 0; i < r.poly.length; i++) { const a = r.poly[i], b = r.poly[(i + 1) % r.poly.length]; perim += Math.hypot(b[0] - a[0], b[1] - a[1]); }
-    const ops = (this.openings[id] || []).map((o) => `<li><b>${o.tag}</b> ${ftin(o.width)} × ${ftin(o.height)} ${KIND[o.kind]} <span>→ ${o.to}</span></li>`).join('');
+    const ops = (this.openings[id] || []).map((o) => `<li><b>${o.tag}</b> ${ftin(o.width)} × ${ftin(o.height)} ${o.vent === 'jali' ? 'breeze-block vent' : KIND[o.kind]} <span>→ ${o.to}</span></li>`).join('');
 
     this.panel.querySelector('h3').textContent = r.name;
-    this.panel.querySelector('.sub').textContent = `${floor === 'gf' ? 'Ground floor' : 'Upper floor'} · floor level +${ftin(r.level)}`;
+    this.panel.querySelector('.sub').textContent = `${m.name} · floor level +${ftin(r.level)}`;
     this.panel.querySelector('.body').innerHTML = `
       <dl>
         <dt>${rect ? 'Size' : 'Overall size'}</dt><dd>${ftin(W)} × ${ftin(D)} <span>(${metres(W)} × ${metres(D)} m)</span>${rect ? '' : '<em>Irregular shape: side lengths are marked on the floor</em>'}</dd>
         <dt>Floor area</dt><dd>${r.area.toFixed(0)} sq ft <span>(${(r.area * 0.092903).toFixed(1)} m²)</span></dd>
-        <dt>${r.outdoor ? 'Height to slab' : 'Ceiling height'}</dt><dd>${ftin(ch)} <span>(${metres(ch)} m)</span></dd>
+        ${r.terrace ? '<dt>Above</dt><dd>Open to the sky <span>(3\'-6" parapet)</span></dd>' : `<dt>${r.outdoor ? 'Height to slab' : m.roofOver ? 'Height to eaves' : 'Ceiling height'}</dt><dd>${ftin(ch)} <span>(${metres(ch)} m)</span></dd>`}
         <dt>Perimeter</dt><dd>${ftin(perim)} <span>(${metres(perim)} m)</span></dd>
       </dl>
       <h4>Doors &amp; windows</h4>
